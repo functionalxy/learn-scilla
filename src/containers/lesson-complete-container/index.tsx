@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
-import { translate } from 'react-i18next';
+import { withNamespaces } from 'react-i18next';
 import Layout from '../../components/layout';
 
 import { Link } from 'react-router-dom';
@@ -43,7 +43,7 @@ class LessonContainer extends React.Component<IProps, {}> {
             <Col sm={10} md={8} lg={5} className="mr-auto ml-auto text-center">
               <Card body={true} outline={true} color="secondary">
                 <div className="py-5 text-secondary">
-                  <h3>{t('lesson.congratulations')}</h3>
+                  <h3>{t('lesson.goodjob')}!</h3>
                   <p>{t('lesson.lessonCompleteMessage')}</p>
                   <br />
 
@@ -54,7 +54,7 @@ class LessonContainer extends React.Component<IProps, {}> {
                   )}
 
                   <Link className="btn btn-outline-secondary btn-block" to={paths.lessonList}>
-                    {t('link.contentMenu')}
+                    {t('link.tableOfContents')}
                   </Link>
                 </div>
               </Card>
@@ -66,8 +66,9 @@ class LessonContainer extends React.Component<IProps, {}> {
   }
 }
 
-const WithTranslation = translate('translations')(LessonContainer);
-
+// @ts-ignore
+const WithTranslation = withNamespaces()(LessonContainer);
+// @ts-check
 const mapStateToProps = (state) => ({
   codes: state.course.courseCodes
 });

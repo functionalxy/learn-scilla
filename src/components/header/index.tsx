@@ -1,5 +1,5 @@
 import React from 'react';
-import { translate } from 'react-i18next';
+import { withNamespaces } from 'react-i18next';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -34,8 +34,9 @@ class Header extends React.Component<IProps, IStates> {
   };
 
   public render(): React.ReactNode {
-    const { i18n, t, auth, history } = this.props;
+    const { i18n, t, auth, history, location } = this.props;
     const { isLoaded, isEmpty } = auth;
+    const { pathname } = location;
 
     return (
       <nav className="navbar navbar-expand-md navbar-light bg-pale">
@@ -49,12 +50,21 @@ class Header extends React.Component<IProps, IStates> {
 
         <Collapse isOpen={this.state.isOpen} navbar={true}>
           <ul className="ml-auto navbar-nav">
-            {!isLoaded ? null : isEmpty ? <AuthModal /> : <AccountDropdown history={history} />}
             <li className="nav-item">
-              <Link className="nav-link" to={paths.lessonList}>
+              <Link
+                className={`nav-link ${pathname === paths.lessonList ? 'active' : ''}`}
+                to={paths.lessonList}
+              >
                 {t('link.tutorial')}
               </Link>
             </li>
+
+            {!isLoaded ? null : isEmpty ? (
+              <AuthModal t={t} />
+            ) : (
+              <AccountDropdown history={history} location={location} t={t} />
+            )}
+
             <I18nDropdown i18n={i18n} t={t} />
           </ul>
         </Collapse>
@@ -69,10 +79,11 @@ class Header extends React.Component<IProps, IStates> {
   };
 }
 
-const withTrans = translate('translations')(Header);
+// @ts-ignore
+const withTrans = withNamespaces()(Header);
+// @ts-check
 const HeaderWithRouter = withRouter(withTrans);
-
-const mapStateToProps = (state: any) => ({
+const mapStateToProps = (state) => ({
   auth: state.firebase.auth
 });
 
